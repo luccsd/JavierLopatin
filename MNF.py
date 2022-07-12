@@ -45,7 +45,7 @@
 #
 ########################################################################################################################
 
-#%%
+
 from __future__ import division
 import argparse
 import numpy as np
@@ -100,11 +100,13 @@ if __name__ == "__main__":
     with rasterio.open(inRaster) as r:
         meta = r.profile # metadata
         img = r.read()   # read as numpy array 
-        b = r.count      # number of bands
+        count = r.count  # number of bands
+        width = r.width
+        height = r.height
         
     # set number of components to retrive
     if args['components'] == 10000:
-         n_components = b
+         n_components = count
     else:
         n_components = args['components']
     
@@ -117,8 +119,7 @@ if __name__ == "__main__":
     #%%   
     # Apply NMF
     img = np.transpose(img, [1,2,0]) 
-    h, w, numBands = img.shape
-    img = img.reshape((w*h, numBands))
+    img = img.reshape((width*height, count))
     
     # check for nan and inf
     if np.any(np.isinf(img))==True:
@@ -143,10 +144,9 @@ if __name__ == "__main__":
     # save
     np.savetxt(outMNF[:-4]+'_variance.txt', pca.explained_variance_ratio_)
     np.savetxt(outMNF[:-4]+'_accVariance.txt', var)
-    img = img.reshape((h, w, numBands))
-    img = np.transpose(img, [2,1,0])    
+    img = img.reshape((height, width, count))
+    img = np.transpose(img, [2,0,1])    
     meta.update(count=n_components, dtype='float64')
     with rasterio.open(outMNF, "w", **meta) as dst:
         dst.write(img[:n_components, :, :]) 
         
-    
