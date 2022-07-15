@@ -231,7 +231,7 @@ if __name__ == "__main__":
       type=int, default=4)
     parser.add_argument('-n','--chuckSize',
       help='Size of the raster chunks to be loaded into memory [needs to be divisible by 16]', 
-      type=int, default=16)
+      type=int, default=256)
   
     parser.add_argument('--version', action='version', version='%(prog)s 2.0')
     args = vars(parser.parse_args())
