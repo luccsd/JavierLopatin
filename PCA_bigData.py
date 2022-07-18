@@ -131,7 +131,7 @@ def brightNorm(inData, n_jobs=4, chuckSize=256):
     do_work = partial(_brightNorm)
     
     # out data
-    outData = "tmp/"+inData[:-4]+"_BN.tif"
+    outData = inData[:-4]+"_BN.tif"
 
     # apply PhenoShape with parallel processing
     try:
@@ -245,10 +245,7 @@ if __name__ == "__main__":
     # Normalization?
     BrightnessNormalization = args["preprop"]
     
-    # create temporal folder
-    if not os.path.exists("tmp"):
-        os.makedirs("tmp")
-        
+       
     # set number of components to retrive
     with rasterio.open(inData) as r:
         count = r.count
@@ -261,14 +258,17 @@ if __name__ == "__main__":
     if BrightnessNormalization==True:
         print('Applying preprocessing...')
         brightNorm(inData)
+        print('')
     
     # PCA
     ipca = IncrementalPCA() 
     if BrightnessNormalization==True:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            PCA_train("tmp/"+inData[:-4]+"_BN.tif", inData[:-4]+"_prepro_PCA.tif",
+            PCA_train(inData[:-4]+"_BN.tif", inData[:-4]+"_prepro_PCA.tif",
                       n_jobs, chuckSize)
+            # delete temporal preprocessing file
+            os.remove(inData[:-4]+"_BN.tif")
     else:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
