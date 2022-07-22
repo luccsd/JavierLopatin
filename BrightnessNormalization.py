@@ -9,7 +9,7 @@
 # Info: The script apply the Brightness Normalization presented in
 #       Feilhauer et al., 2010 to all rasters contained in a folder
 #       with parallel processing of raster chunks. The whole raster image is never
-#       compleatelly loaded into memory
+#       completely loaded into memory
 #
 # Author: Javier Lopatin
 # Email: javierlopatin@gmail.com
